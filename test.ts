@@ -1,4 +1,4 @@
-import DropboxHelper from "./../src"
+import DropboxHelper from "./src"
 console.log(process.env.DROPBOX_KEY)
 var DROPBOX_KEY = process.env.DROPBOX_KEY || "";
 
@@ -8,10 +8,9 @@ async function main(){
     let pathname = "folders/test.txt"
 
     let writtenResponse = await dropbox.sendFile(pathname, content, false)
-    console.log(writtenResponse)
-
     let readResponse = await dropbox.getFile(pathname, false)
-    console.log(readResponse)
+    
+    console.log(writtenResponse, readResponse)
 }
 
 (main())
