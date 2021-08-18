@@ -1,0 +1,28 @@
+{
+  "name": "dropbox-utils",
+  "version": "1.0.0",
+  "repository": "git@github.com:IonDevOrg/dropbox-utils.git",
+  "author": "Daniel Farias <daniel.dsfarias@gmail.com>",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "/dist"
+  ],
+  "scripts": {
+    "test": "npx jest .",
+    "build": "npx tsc --declaration"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.23",
+    "@types/node": "^15.12.5",
+    "@types/node-fetch": "^2.5.12",
+    "jest": "^27.0.6",
+    "ts-jest": "^27.0.3",
+    "ts-node": "^10.0.0",
+    "typescript": "^4.3.4"
+  },
+  "dependencies": {
+    "dropbox": "^10.6.0"
+  }
+}
