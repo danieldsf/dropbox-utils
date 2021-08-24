@@ -36,14 +36,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendFile = exports.getFile = exports.getDropbox = void 0;
+exports.DropboxHelper = exports.sendFile = exports.listFiles = exports.getFile = exports.getDropbox = void 0;
 var dropbox_1 = require("dropbox"); // eslint-disable-line no-unused-vars
 function getDropbox(accessToken) {
     return new dropbox_1.Dropbox({ accessToken: accessToken });
 }
 exports.getDropbox = getDropbox;
-function getFile(dbx, path, isObject) {
-    if (isObject === void 0) { isObject = false; }
+function getFile(dbx, path) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             if (!path.startsWith("/")) {
@@ -56,13 +55,7 @@ function getFile(dbx, path, isObject) {
                         return (_a = data === null || data === void 0 ? void 0 : data.result) === null || _a === void 0 ? void 0 : _a.fileBinary;
                     })
                         .then(function (content) {
-                        var stringContent = content.toString('utf8');
-                        if (isObject) {
-                            resolve(JSON.parse(stringContent));
-                        }
-                        else {
-                            resolve(stringContent);
-                        }
+                        resolve(content.toString('utf8'));
                     })
                         .catch(function (error) {
                         reject(error);
@@ -72,14 +65,32 @@ function getFile(dbx, path, isObject) {
     });
 }
 exports.getFile = getFile;
-function sendFile(dbx, path, contents, isObject) {
-    if (isObject === void 0) { isObject = false; }
+function listFiles(dbx, path) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             if (!path.startsWith("/")) {
                 path = "/" + path;
             }
-            return [2 /*return*/, dbx.filesUpload({ path: path, contents: isObject ? JSON.stringify(contents) : contents, mode: { ".tag": "overwrite" } })];
+            return [2 /*return*/, new Promise(function (resolve, reject) {
+                    dbx.filesListFolder({ path: path })
+                        .then(function (content) {
+                        resolve(content);
+                    })
+                        .catch(function (error) {
+                        reject(error);
+                    });
+                })];
+        });
+    });
+}
+exports.listFiles = listFiles;
+function sendFile(dbx, path, contents) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            if (!path.startsWith("/")) {
+                path = "/" + path;
+            }
+            return [2 /*return*/, dbx.filesUpload({ path: path, contents: contents, mode: { ".tag": "overwrite" } })];
         });
     });
 }
@@ -88,23 +99,31 @@ var DropboxHelper = /** @class */ (function () {
     function DropboxHelper(accessToken) {
         this.dropboxHandler = getDropbox(accessToken);
     }
-    DropboxHelper.prototype.getFile = function (path, isObject) {
-        if (isObject === void 0) { isObject = true; }
+    DropboxHelper.prototype.getFile = function (path) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, getFile(this.dropboxHandler, path, isObject)];
+                    case 0: return [4 /*yield*/, getFile(this.dropboxHandler, path)];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });
         });
     };
-    DropboxHelper.prototype.sendFile = function (path, contents, isObject) {
-        if (isObject === void 0) { isObject = true; }
+    DropboxHelper.prototype.listFiles = function (path) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, sendFile(this.dropboxHandler, path, contents, isObject)];
+                    case 0: return [4 /*yield*/, listFiles(this.dropboxHandler, path)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
+    DropboxHelper.prototype.sendFile = function (path, contents) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, sendFile(this.dropboxHandler, path, contents)];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });
@@ -112,4 +131,4 @@ var DropboxHelper = /** @class */ (function () {
     };
     return DropboxHelper;
 }());
-exports.default = DropboxHelper;
+exports.DropboxHelper = DropboxHelper;
